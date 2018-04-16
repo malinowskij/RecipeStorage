@@ -29,9 +29,9 @@ namespace RecipeStorageAPI.Controllers
         public IHttpActionResult GetRatingValueForRecipe(int recipeId)
         {
             List<Rating> ratings = db.Ratings.Where(r => r.RecipeID == recipeId).ToList();
-            double value = 0;
+            double value = 0.0;
             if (ratings.Count > 0)
-                value = ratings.Sum(r => r.Value) / ratings.Count;
+                value = (double)ratings.Sum(r => r.Value) / (double)ratings.Count;
             RatingValue rv = new RatingValue(recipeId, value);
             return Ok(rv);
         }

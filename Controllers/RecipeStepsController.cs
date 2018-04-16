@@ -102,6 +102,27 @@ namespace RecipeStorageAPI.Controllers
             return Ok(recipeStep);
         }
 
+        // DELETE api/RecipeSteps/Recipe/5
+        [Authorize]
+        [HttpDelete]
+        [Route("api/RecipeSteps/Recipe/{id:int}")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult RemoveAllFromRecipe(int id)
+        {
+            List<RecipeStep> ri = db.RecipeSteps.Where(r => r.RecipeID == id).ToList();
+
+            if (ri.Count > 0)
+            {
+                foreach (RecipeStep item in ri)
+                {
+                    db.RecipeSteps.Remove(item);
+                }
+                db.SaveChanges();
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

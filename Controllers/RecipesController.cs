@@ -37,8 +37,8 @@ namespace RecipeStorageAPI.Controllers
             return Ok(recipe);
         }
 
-
         // PUT: api/Recipes/5
+        [Authorize]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutRecipe(int id, Recipe recipe)
         {
@@ -51,6 +51,9 @@ namespace RecipeStorageAPI.Controllers
             {
                 return BadRequest();
             }
+
+            string idu = User.Identity.GetUserId();
+            recipe.ApplicationUserID = idu;
 
             db.Entry(recipe).State = EntityState.Modified;
 
@@ -94,10 +97,17 @@ namespace RecipeStorageAPI.Controllers
         }
 
         // DELETE: api/Recipes/5
+        [Authorize]
         [ResponseType(typeof(Recipe))]
         public IHttpActionResult DeleteRecipe(int id)
         {
             Recipe recipe = db.Recipes.Find(id);
+
+            if (!User.Identity.GetUserId().Equals(recipe.ApplicationUserID))
+            {
+                return NotFound();
+            }
+
             if (recipe == null)
             {
                 return NotFound();
